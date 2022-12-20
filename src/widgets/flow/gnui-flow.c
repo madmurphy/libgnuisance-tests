@@ -706,6 +706,16 @@ static void gnui_flow_layout_measure (
 	GNUI_SET_POINTED_VALUE_IF_GIVEN__2_1(minimum_baseline, -1);
 	GNUI_SET_POINTED_VALUE_IF_GIVEN__2_1(natural_baseline, -1);
 
+	printf(
+		"Measuring %s dimension, for size: %d, returned value: %d\n",
+		dimension == GTK_ORIENTATION_VERTICAL ?
+			"VERTICAL"
+		:
+			"HORIZONTAL",
+		for_size,
+		ret_min
+	);
+
 }
 
 
@@ -732,6 +742,12 @@ static void gnui_flow_layout_allocate (
 ) {
 
 	/*  Part I. Measuring and connecting  */
+
+	printf(
+		"Allocating for available width: %d, available height: %d\n",
+		available_width,
+		available_height
+	);
 
 	GtkWidget * child = gtk_widget_get_first_child(widget);
 

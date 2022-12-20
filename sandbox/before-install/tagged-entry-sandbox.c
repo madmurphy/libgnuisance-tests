@@ -150,6 +150,7 @@ static void on_app_activate (
 			"hexpand", true,
 			"vexpand", true,
 			"valign", GTK_ALIGN_CENTER,
+			"halign", GTK_ALIGN_CENTER,
 			"placeholder-text", "Write something here",
 			"delimiter-chars", ", ",
 			"filter-function", tagged_entry_filter_func,
