@@ -1,0 +1,18 @@
+ChangeLog
+=========
+
+
+0.2.0 (2022-12-XXXXXXXXXX)
+------------------
+
+Changes:
+
+* The `"invalid-changed"` signal has been added to `GnuiTaggedEntry`
+* Code review
+* Documentation
+
+
+0.1.0 (2022-12-19)
+------------------
+
+**libgnuisance** is out!
