@@ -196,6 +196,7 @@ typedef struct _GnuiFlowLayoutPrivate {
 	GtkTextDirection
 		page_direction,
 		line_direction;
+	guint allocated_fix_size;
 } GnuiFlowLayoutPrivate;
 
 
@@ -520,6 +521,7 @@ static void gnui_flow_layout_update_orientation (
 	}
 
 	priv->orientation = orientation;
+	priv->allocated_fix_size = 0;
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(manager), orientation);
 
 	if (orientation == GTK_ORIENTATION_VERTICAL) {
@@ -579,13 +581,23 @@ static void gnui_flow_layout_measure (
 	gint * const natural_baseline
 ) {
 
-	GnuiFlowLayoutPrivate * const priv =
+	const GnuiFlowLayoutPrivate * const priv =
 		gnui_flow_layout_get_instance_private(GNUI_FLOW_LAYOUT(manager));
 
 	GtkWidget * child;
 	gint ret_min = 0, ret_nat = 0;
 
-	if (for_size == -1 || dimension == priv->orientation) {
+	const guint space =
+		dimension == priv->orientation ?
+			0
+		: priv->allocated_fix_size > 0 ?
+			priv->allocated_fix_size
+		: for_size > -1 ?
+			*((guint *) &for_size)
+		:
+			0;
+
+	if (space == 0) {
 
 		#define tmpint ret_min
 
@@ -618,12 +630,13 @@ static void gnui_flow_layout_measure (
 
 	GnuiOrientableAllocation
 		nexta, preva = { 0 };
-	GnuiOrientableRequisition occupied;
-	guint row_size = 0;
-	guint space = for_size > -1 ? *((guint *) &for_size) : 0;
 
-	occupied.fix_size = space;
-	occupied.var_size = 0;
+	GnuiOrientableRequisition occupied = {
+		.fix_size = space,
+		.var_size = 0
+	};
+
+	guint row_size = 0;
 
 	for (
 		child = gtk_widget_get_first_child(widget);
@@ -1165,6 +1178,9 @@ static void gnui_flow_layout_allocate (
 	#undef l_exp_quota
 	#undef l_n_exp
 	#undef next_offset
+
+	priv->allocated_fix_size = occupied.fix_size;
+	gtk_layout_manager_layout_changed(manager);
 
 }
 
